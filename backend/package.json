@@ -1,0 +1,14 @@
+{
+  "name": "algol-cti-backend",
+  "version": "1.0.0",
+  "description": "Backend service for the Algol CTI dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ip": "^2.0.1",
+    "ws": "^8.13.0",
+    "xml2js": "^0.6.2"
+  }
+}

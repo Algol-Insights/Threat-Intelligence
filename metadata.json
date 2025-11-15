@@ -1,5 +1,5 @@
 {
   "name": "Algol Cyber Threat Intelligence Platform",
-  "description": "An AI-powered dashboard that analyzes firewall logs to identify, rank, and report on cybersecurity threats. It uses Gemini to provide detailed threat assessments based on CVEs and other datasets, showing how the firewall mitigates attacks.",
+  "description": "An AI-powered dashboard that analyzes firewall logs to identify, rank, and report on cybersecurity threats. It uses an AI model to provide detailed threat assessments based on CVEs and other datasets, showing how the firewall mitigates attacks.",
   "requestFramePermissions": []
 }

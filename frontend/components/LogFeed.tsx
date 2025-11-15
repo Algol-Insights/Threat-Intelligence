@@ -38,8 +38,8 @@ const ThreatRow: React.FC<{ log: FirewallLog; isSelected: boolean; onSelect: () 
         </div>
         <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{log.description}</p>
         {analysis && (
-             <div className={`mt-2 text-xs font-semibold inline-block px-2 py-0.5 rounded-full border ${getSeverityColor(analysis.severity)}`}>
-             {analysis.severity}
+             <div className={`mt-2 text-xs font-semibold inline-block px-2 py-0.5 rounded-full border ${getSeverityColor(analysis.contextualSeverity || analysis.severity)}`}>
+             {analysis.contextualSeverity || analysis.severity}
            </div>
         )}
       </div>
@@ -79,15 +79,23 @@ const LogFeed: React.FC<LogFeedProps> = ({ logs, onSelectLog, selectedLogId, ana
       </div>
       <FilterControls currentFilter={severityFilter} onFilterChange={onFilterChange} />
       <div className="flex-grow overflow-y-auto pr-2">
-        {logs.map(log => (
-          <ThreatRow
-            key={log.id}
-            log={log}
-            isSelected={log.id === selectedLogId}
-            onSelect={() => onSelectLog(log)}
-            analysis={analyzedLogs[log.id]}
-          />
-        ))}
+        {logs.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-center text-gray-500 dark:text-gray-400">
+            <WifiIcon className="h-12 w-12 mb-4" />
+            <p className="font-semibold">Waiting for incoming firewall logs...</p>
+            <p className="text-xs mt-1">Ensure your firewall is configured to send syslog data to this server.</p>
+          </div>
+        ) : (
+          logs.map(log => (
+            <ThreatRow
+              key={log.id}
+              log={log}
+              isSelected={log.id === selectedLogId}
+              onSelect={() => onSelectLog(log)}
+              analysis={analyzedLogs[log.id]}
+            />
+          ))
+        )}
       </div>
     </div>
   );

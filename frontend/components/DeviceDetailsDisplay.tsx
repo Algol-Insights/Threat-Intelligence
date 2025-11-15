@@ -1,6 +1,6 @@
 import React from 'react';
 import { NetworkDevice, RunningService, DeviceType } from '../types';
-import { ComputerDesktopIcon, ServerIcon, DevicePhoneMobileIcon, WrenchScrewdriverIcon, CpuChipIcon, AlertTriangleIcon } from './icons';
+import { ComputerDesktopIcon, ServerIcon, DevicePhoneMobileIcon, WrenchScrewdriverIcon, CpuChipIcon, AlertTriangleIcon, ArrowLeftIcon } from './icons';
 
 interface DeviceDetailsDisplayProps {
   device: NetworkDevice;
@@ -8,6 +8,7 @@ interface DeviceDetailsDisplayProps {
   isLoading: boolean;
   error: string | null;
   onGetRemediation: (service: RunningService) => void;
+  onBack: () => void;
 }
 
 const getDeviceIcon = (type: DeviceType) => {
@@ -27,7 +28,7 @@ const RemediationDisplay: React.FC<{ content: string }> = ({ content }) => {
             .replace(/\*\*(.*)\*\*/g, '<strong class="font-semibold text-black dark:text-white">$1</strong>')
             .replace(/`([^`]+)`/g, '<code class="bg-gray-200 dark:bg-gray-800 rounded-md px-1.5 py-1 font-mono text-sm">$1</code>')
             .replace(/^\s*\d\.\s(.*)/gm, '<li class="ml-5 list-decimal">$1</li>')
-            .replace(/(\n<li>.*<\/li>)+/g, (match) => `<ul class="space-y-2">${match}</ul>`)
+            .replace(/(?:\n<li>.*<\/li>)+/s, (match) => `<ul class="space-y-2">${match}</ul>`)
             .replace(/\n/g, '<br />');
     };
 
@@ -37,9 +38,18 @@ const RemediationDisplay: React.FC<{ content: string }> = ({ content }) => {
     );
 };
 
-const DeviceDetailsDisplay: React.FC<DeviceDetailsDisplayProps> = ({ device, remediation, isLoading, error, onGetRemediation }) => {
+const DeviceDetailsDisplay: React.FC<DeviceDetailsDisplayProps> = ({ device, remediation, isLoading, error, onGetRemediation, onBack }) => {
   return (
     <div className="bg-white dark:bg-black p-6 rounded-lg border border-gray-200 dark:border-gray-800 h-full flex flex-col">
+       <div className="flex-shrink-0 mb-6">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-black rounded-md p-1 -ml-1"
+        >
+          <ArrowLeftIcon className="h-4 w-4" />
+          Back to Main Dashboard
+        </button>
+      </div>
       <div className="flex-grow overflow-y-auto pr-2">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">

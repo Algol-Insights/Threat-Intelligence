@@ -1,3 +1,4 @@
+
 import React, { useMemo } from 'react';
 import { FirewallLog, ThreatAnalysis, Severity } from '../types';
 import { TrophyIcon } from './icons';

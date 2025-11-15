@@ -7,6 +7,7 @@ export interface FirewallLog {
   protocol: 'TCP' | 'UDP' | 'ICMP';
   action: 'BLOCKED' | 'ALLOWED';
   description: string;
+  mispContext?: any; // For future MISP integration
 }
 
 export enum Severity {
