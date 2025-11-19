@@ -1017,3 +1017,129 @@ This capstone project report is organized to comprehensively document the resear
 
 ---
 
+
+## CHAPTER 2: LITERATURE REVIEW
+
+### 2.1 Introduction
+
+This chapter presents a comprehensive review of existing literature on cyber threat intelligence platforms, Security Information and Event Management (SIEM) systems, Security Orchestration, Automation and Response (SOAR) solutions, and the application of Artificial Intelligence in cybersecurity. The review examines the evolution of threat detection technologies, identifies current capabilities and limitations of commercial and open-source solutions, and establishes the theoretical foundations for developing an AI-native autonomous security platform. The chapter concludes with a research gap analysis that justifies the need for Agol and presents the conceptual framework guiding this research.
+
+### 2.2 The Evolution of Cyber Threat Landscape
+
+#### 2.2.1 From Script Kiddies to Advanced Persistent Threats
+
+The cyber threat landscape has undergone dramatic transformation over the past two decades. Early threats in the 1990s and 2000s consisted primarily of viruses, worms, and attacks by individual hackers seeking notoriety. The Morris Worm (1988), ILOVEYOU virus (2000), and Code Red worm (2001) demonstrated the potential for widespread disruption but were relatively unsophisticated in their techniques (Whitman & Mattord, 2021).
+
+The mid-2000s marked a shift toward financially-motivated cybercrime with the emergence of organized criminal enterprises. The rise of Zeus banking trojan (2007), sophisticated phishing campaigns, and credit card theft operations demonstrated increasing professionalization of cyber threats (Anderson et al., 2019). By 2010, nation-state actors entered the landscape with operations like Stuxnet, marking the beginning of Advanced Persistent Threat (APT) campaigns characterized by:
+- Long-term strategic objectives rather than immediate gains
+- Significant resources and sophisticated tooling
+- Focus on espionage, intellectual property theft, and infrastructure disruption
+- Advanced evasion techniques to avoid detection
+
+#### 2.2.2 Current Threat Statistics and Trends
+
+Recent threat intelligence reports reveal alarming escalation in both volume and sophistication of cyber attacks:
+
+**Global Attack Volume**: Cybersecurity Ventures (2024) projects global cybercrime costs will exceed $10.5 trillion annually by 2025, representing a 300% increase from 2015 levels. The average organization experiences 270 days of compromise before breach detection (IBM Security, 2023).
+
+**Ransomware Evolution**: Ransomware attacks increased 150% in 2023, with average ransom demands exceeding $2 million. Modern ransomware operations employ double-extortion tactics (encryption + data theft) and increasingly target critical infrastructure including healthcare, energy, and government services (Sophos, 2024).
+
+**Supply Chain Attacks**: High-profile incidents like SolarWinds (2020) and Kaseya (2021) demonstrated attackers' shift toward supply chain compromise to gain access to multiple victims simultaneously. ENISA (2023) reports a 400% increase in supply chain attacks since 2020.
+
+**Cloud and IoT Threats**: Cloud adoption and IoT proliferation create expanded attack surfaces. Gartner (2023) estimates 75% of organizations will experience at least one cloud security incident by 2025. IoT botnets like Mirai continue evolving with millions of compromised devices (Kolias et al., 2017).
+
+**African Threat Landscape**: The African Union Cyber Security Report (2023) highlights unique regional challenges:
+- 230% increase in reported cyber incidents across African nations since 2020
+- Banking and mobile money platforms primary targets
+- Limited threat intelligence coverage compared to North American/European threats
+- Growing presence of international APT groups targeting African resources and infrastructure
+- Cryptocurrency fraud exploiting limited regulatory frameworks
+
+### 2.3 Traditional SIEM Platforms: Capabilities and Limitations
+
+Security Information and Event Management (SIEM) systems represent the dominant approach to security monitoring and threat detection for the past 15 years.
+
+#### 2.3.1 SIEM Architecture and Functionality
+
+SIEM platforms aggregate, normalize, and analyze security event data from diverse sources across an organization's IT infrastructure. The typical SIEM architecture consists of (Kent & Souppaya, 2006; Miller et al., 2011):
+
+**Data Collection Layer**:
+- Log collectors/forwarders deployed across network infrastructure
+- Support for syslog, Windows Event Logs, database audit logs, application logs
+- Network flow data (NetFlow, IPFIX)
+- Threat intelligence feeds
+
+**Normalization and Enrichment Layer**:
+- Schema mapping to common event format
+- Timestamp normalization across time zones
+- User and asset enrichment from identity management systems
+- GeoIP lookup for external connections
+
+**Correlation and Analysis Engine**:
+- Rule-based event correlation (e.g., "5 failed logins followed by successful login")
+- Statistical anomaly detection for baseline deviations
+- Time-series analysis for pattern recognition
+- Alert generation and priority assignment
+
+**Storage and Retention**:
+- High-performance data storage for hot data (recent events)
+- Archive storage for compliance retention requirements
+- Indexed search capabilities for historical investigation
+
+**Presentation Layer**:
+- Real-time dashboards and monitoring views
+- Investigation consoles for threat hunting
+- Report generation for compliance and management
+- Alert workflow and case management
+
+#### 2.3.2 Commercial SIEM Solutions
+
+**Splunk Enterprise Security**:
+Splunk dominates the SIEM market with its data platform approach (Splunk, 2023). Key capabilities include:
+- Universal log ingestion supporting 1,000+ data sources
+- Splunk Processing Language (SPL) for flexible data queries
+- Machine learning toolkit for anomaly detection
+- Enterprise Security app with pre-built use cases
+- Limitations: Cost ($50,000-$500,000+ annually), complexity requiring dedicated administrators, high storage costs for data retention
+
+**IBM QRadar**:
+QRadar employs flow-based analysis combined with log correlation (IBM, 2023):
+- Network flow analysis for bandwidth anomalies
+- Built-in threat intelligence integration
+- Cognitive security features using Watson AI
+- Offense management workflow
+- Limitations: Complex deployment, resource-intensive, limited cloud-native support
+
+**LogRhythm**:
+LogRhythm focuses on security analytics and response automation (LogRhythm, 2023):
+- Statistical anomaly detection using Machine Data Intelligence
+- Integrated response actions (scripts, API calls)
+- Cloud and on-premise deployment options
+- Limitations: Scaling challenges, reliance on pre-configured playbooks
+
+**Microsoft Sentinel (Cloud-Native)**:
+Azure Sentinel represents the cloud-native SIEM generation (Microsoft, 2023):
+- Serverless architecture with consumption-based pricing
+- Integration with Microsoft security ecosystem
+- Built-in SOAR capabilities via Azure Logic Apps
+- KQL query language for data exploration
+- Limitations: Azure lock-in, costs unpredictable with data growth, basic AI compared to dedicated ML platforms
+
+#### 2.3.3 SIEM Limitations and Research Gaps
+
+Despite widespread adoption, SIEM platforms face fundamental limitations identified in academic and industry literature:
+
+**High False Positive Rates**: Kent (2006) and subsequent studies consistently report 90-95% false positive rates in SIEM alerting. Bhatt et al. (2014) found that SIEM rule tuning requires months of analyst effort and continuous maintenance as environments change.
+
+**Rule Complexity and Maintenance Burden**: Vaarandi & Pihelgas (2015) demonstrate that effective SIEM operation requires hundreds of correlation rules, each requiring expert knowledge to develop and validate. Rule conflicts and performance degradation common as rule sets expand.
+
+**Limited Context Awareness**: Traditional SIEMs lack understanding of organizational context. An SSH brute force attempt from China may be routine for a multinational corporation but critical for a small business with no legitimate Chinese connections (Sherry et al., 2012).
+
+**Analyst Skill Requirements**: Zimmerman (2014) identifies significant skills gap in SIEM operations. Organizations struggle to find analysts capable of developing complex correlation rules, interpreting SIEM data, and investigating sophisticated threats.
+
+**Reactive Posture**: SIEMs excel at detecting known attack patterns but struggle with novel threats. Signature-based detection fails against zero-day exploits and adaptive adversaries who modify TTPs to evade detection (Sommer & Paxson, 2010).
+
+**Alert Fatigue**: Multiple studies document the overwhelming alert volume problem. Sundaramurthy et al. (2014) found SOC analysts spend 75% of time investigating false positives, leading to burnout and missed critical alerts.
+
+**Cost Barriers**: Enterprise SIEM deployments cost $200,000-$2,000,000 for licensing, hardware, professional services, and ongoing support (Gartner, 2023). This places advanced threat detection beyond reach of SMEs and resource-constrained organizations.
+
