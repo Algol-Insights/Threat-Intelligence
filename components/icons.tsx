@@ -131,3 +131,29 @@ export const WrenchScrewdriverIcon: React.FC<React.SVGProps<SVGSVGElement>> = (p
         <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.472-2.472a3.75 3.75 0 00-5.303-5.303L6.25 9.75M11.42 15.17L6.25 9.75m5.17 5.42l-2.472-2.472a3.75 3.75 0 00-5.303-5.303L6.25 9.75" />
     </svg>
 );
+
+export const ArrowLeftIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75" />
+    </svg>
+);
+
+export const CommandLineIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
+    </svg>
+);
+
+export const ClipboardDocumentIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.5c0-.621.504-1.125 1.125-1.125H7.5" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 3.75a3 3 0 00-3-3H6.375a3 3 0 00-3 3v1.5a.75.75 0 00.75.75h1.5a.75.75 0 00.75-.75v-1.5a1.5 1.5 0 011.5-1.5h5.25a1.5 1.5 0 011.5 1.5v1.5a.75.75 0 00.75.75h1.5a.75.75 0 00.75-.75v-1.5a3 3 0 00-3-3z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 13.5h-6.75a.75.75 0 000 1.5h6.75a.75.75 0 000-1.5z" />
+    </svg>
+);
+
+export const BrainCircuitIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.572L16.25 21l-.648-.428a2.25 2.25 0 01-1.086-1.086L13.5 18.75l.428-.648a2.25 2.25 0 011.086-1.086L15.75 16.5l.648.428a2.25 2.25 0 011.086 1.086L18 18.75l-.428.648a2.25 2.25 0 01-1.086 1.086z" />
+    </svg>
+);

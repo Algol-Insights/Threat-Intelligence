@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { FirewallLog, ThreatAnalysis, Severity, GeolocatedThreat, Alert, OrganizationalContext, NetworkDevice, RunningService } from './types';
-import { MOCK_LOGS } from './constants';
 import { analyzeThreat, getRemediationSuggestion } from './services/geminiService';
 import { getGeolocationsForLogs } from './services/ipGeolocationService';
 import Dashboard from './components/Dashboard';
@@ -15,8 +14,10 @@ const ALERTING_RULES = [
   { keyword: 'tor', message: 'Medium-Priority: Outbound connection to TOR network detected.' },
 ];
 
+type LogActionFilter = 'all' | 'blocked' | 'allowed' | 'analyzed';
+
 const App: React.FC = () => {
-  const [logs, setLogs] = useState<FirewallLog[]>(MOCK_LOGS);
+  const [logs, setLogs] = useState<FirewallLog[]>([]);
   const [selectedLog, setSelectedLog] = useState<FirewallLog | null>(null);
   const [analysis, setAnalysis] = useState<ThreatAnalysis | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -24,6 +25,7 @@ const App: React.FC = () => {
   const [analyzedLogs, setAnalyzedLogs] = useState<Record<string, ThreatAnalysis>>({});
   const [geolocatedThreats, setGeolocatedThreats] = useState<GeolocatedThreat[]>([]);
   const [severityFilter, setSeverityFilter] = useState<Severity | 'All'>('All');
+  const [logActionFilter, setLogActionFilter] = useState<LogActionFilter>('all');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -44,14 +46,14 @@ const App: React.FC = () => {
     root.classList.add(theme);
   }, [theme]);
 
-  // Effect for initial data load
-  useEffect(() => {
-    getGeolocationsForLogs(logs.filter(l => l.action === 'BLOCKED')).then(setGeolocatedThreats);
-  }, []);
-
   // Effect for real-time data from WebSocket backend
   useEffect(() => {
-    const socket = new WebSocket('ws://localhost:8080');
+    // Make WebSocket URL dynamic to improve deployment flexibility
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.hostname}:8080`;
+    console.log(`Attempting to connect to WebSocket at ${wsUrl}`);
+    
+    const socket = new WebSocket(wsUrl);
 
     socket.onopen = () => {
       console.log("WebSocket connection established with Algol backend.");
@@ -90,8 +92,8 @@ const App: React.FC = () => {
       }
     };
 
-    socket.onclose = () => {
-      console.log("WebSocket connection closed. Attempting to reconnect...");
+    socket.onclose = (event: CloseEvent) => {
+      console.warn(`WebSocket connection closed. Code: ${event.code}, Reason: '${event.reason}'. Cleanly closed: ${event.wasClean}.`);
       // Optional: implement reconnect logic here
     };
 
@@ -138,17 +140,24 @@ const App: React.FC = () => {
   }, [selectedLog, organizationalContext]);
   
   const filteredLogs = useMemo(() => {
-    if (severityFilter === 'All') {
-      return logs;
-    }
     return logs.filter(log => {
-      const analysis = analyzedLogs[log.id];
-      // Use contextual severity for filtering if available
-      const severity = analysis?.contextualSeverity || analysis?.severity;
-      // Keep logs that haven't been analyzed OR that match the filter
-      return !analysis || severity === severityFilter;
+      // Action filter
+      if (logActionFilter !== 'all') {
+        if (logActionFilter === 'blocked' && log.action !== 'BLOCKED') return false;
+        if (logActionFilter === 'allowed' && log.action !== 'ALLOWED') return false;
+        if (logActionFilter === 'analyzed' && !analyzedLogs[log.id]) return false;
+      }
+      
+      // Severity filter
+      if (severityFilter !== 'All') {
+        const analysis = analyzedLogs[log.id];
+        const severity = analysis?.contextualSeverity || analysis?.severity;
+        if (!analysis || severity !== severityFilter) return false;
+      }
+      
+      return true;
     });
-  }, [logs, severityFilter, analyzedLogs]);
+  }, [logs, severityFilter, analyzedLogs, logActionFilter]);
 
   const handleDismissAlert = (alertId: string) => {
     setAlerts(prev => prev.filter(a => a.id !== alertId));
@@ -168,6 +177,10 @@ const App: React.FC = () => {
     setSelectedDevice(device);
     setRemediation(null); // Clear previous remediation
     setRemediationError(null);
+  }, []);
+  
+  const handleBackToDashboard = useCallback(() => {
+    setSelectedDevice(null);
   }, []);
 
   const handleGetRemediation = useCallback(async (service: RunningService) => {
@@ -194,6 +207,7 @@ const App: React.FC = () => {
           isLoading={isRemediationLoading}
           error={remediationError}
           onGetRemediation={handleGetRemediation}
+          onBack={handleBackToDashboard}
         />
       );
     }
@@ -224,12 +238,14 @@ const App: React.FC = () => {
         networkDevices={networkDevices}
         onSelectDevice={handleSelectDevice}
         selectedDeviceId={selectedDevice?.id}
+        logActionFilter={logActionFilter}
+        onLogActionFilterChange={setLogActionFilter}
       />
     );
   }, [
-      selectedDevice, remediation, isRemediationLoading, remediationError, handleGetRemediation,
+      selectedDevice, remediation, isRemediationLoading, remediationError, handleGetRemediation, handleBackToDashboard,
       filteredLogs, logs, selectedLog, analysis, isLoading, error, handleSelectLog, handleAnalyze,
-      analyzedLogs, geolocatedThreats, severityFilter, theme, alerts, isSettingsOpen,
+      analyzedLogs, geolocatedThreats, severityFilter, logActionFilter, theme, alerts, isSettingsOpen,
       organizationalContext, networkDevices, handleSelectDevice
   ]);
 

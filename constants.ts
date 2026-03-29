@@ -1,47 +1,6 @@
 import { FirewallLog } from './types';
 
-export const MOCK_LOGS: FirewallLog[] = [
-  {
-    id: 'log-001',
-    timestamp: '2023-10-27T14:35:11Z',
-    sourceIp: '198.51.100.54',
-    destinationIp: '203.0.113.10',
-    destinationPort: 22,
-    protocol: 'TCP',
-    action: 'BLOCKED',
-    description: 'Multiple failed SSH login attempts',
-  },
-  {
-    id: 'log-002',
-    timestamp: '2023-10-27T14:36:02Z',
-    sourceIp: '192.0.2.14',
-    destinationIp: '203.0.113.15',
-    destinationPort: 4444,
-    protocol: 'TCP',
-    action: 'BLOCKED',
-    description: 'Connection attempt to known C2 port',
-  },
-  {
-    id: 'log-003',
-    timestamp: '2023-10-27T14:38:20Z',
-    sourceIp: '198.51.100.89',
-    destinationIp: '203.0.113.22',
-    destinationPort: 80,
-    protocol: 'TCP',
-    action: 'BLOCKED',
-    description: 'HTTP GET request with SQL injection pattern',
-  },
-  {
-    id: 'log-004',
-    timestamp: '2023-10-27T14:39:05Z',
-    sourceIp: '192.0.2.77',
-    destinationIp: '203.0.113.10',
-    destinationPort: 53,
-    protocol: 'UDP',
-    action: 'BLOCKED',
-    description: 'Anomalous DNS query (possible tunneling)',
-  },
-];
+export const MOCK_LOGS: FirewallLog[] = [];
 
 export const IP_GEOLOCATIONS: Record<string, { lat: number; lng: number; city: string; }> = {
   '198.51.100.54': { lat: 34.0522, lng: -118.2437, city: 'Los Angeles, USA' },
