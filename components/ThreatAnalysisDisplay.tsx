@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FirewallLog, ThreatAnalysis, Severity } from '../types';
-import { CpuChipIcon, ShieldExclamationIcon, DocumentArrowDownIcon, TableCellsIcon } from './icons';
+import { CpuChipIcon, ShieldExclamationIcon, DocumentArrowDownIcon, TableCellsIcon, CommandLineIcon, ClipboardDocumentIcon, BrainCircuitIcon } from './icons';
 
 interface ThreatAnalysisDisplayProps {
   selectedLog: FirewallLog | null;
@@ -44,6 +44,8 @@ const AnalysisSection: React.FC<{ title: string; children: React.ReactNode }> = 
 
 
 const ThreatAnalysisDisplay: React.FC<ThreatAnalysisDisplayProps> = ({ selectedLog, analysis, isLoading, error, onAnalyze }) => {
+  const [copied, setCopied] = useState(false);
+
   if (!selectedLog) {
     return (
       <div className="bg-white dark:bg-black p-6 rounded-lg border border-gray-200 dark:border-gray-800 flex flex-col justify-center items-center h-full text-center">
@@ -125,6 +127,14 @@ const ThreatAnalysisDisplay: React.FC<ThreatAnalysisDisplayProps> = ({ selectedL
     document.body.removeChild(link);
   };
 
+  const blockCommand = `sudo ufw deny from ${selectedLog.sourceIp} to any`;
+  const handleCopyCommand = () => {
+    navigator.clipboard.writeText(blockCommand);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+
   return (
     <div className="bg-white dark:bg-black p-6 rounded-lg border border-gray-200 dark:border-gray-800 h-full flex flex-col">
       <div className="flex-grow overflow-y-auto pr-2">
@@ -154,6 +164,15 @@ const ThreatAnalysisDisplay: React.FC<ThreatAnalysisDisplayProps> = ({ selectedL
             </div>
         </div>
         
+        {selectedLog.mispContext && (
+            <div className="mb-6 flex items-center gap-3 p-3 rounded-md border border-yellow-500/30 bg-yellow-500/10">
+                <BrainCircuitIcon className="h-6 w-6 text-yellow-500 flex-shrink-0" />
+                <p className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">
+                    Enriched with MISP Threat Intelligence.
+                </p>
+            </div>
+        )}
+
         {isLoading && (
              <div className="flex flex-col items-center justify-center h-full">
                 <CpuChipIcon className="h-12 w-12 text-blue-500 animate-pulse mb-4" />
@@ -174,13 +193,27 @@ const ThreatAnalysisDisplay: React.FC<ThreatAnalysisDisplayProps> = ({ selectedL
                 <AnalysisSection title="Threat Summary">
                     <p>{analysis.summary}</p>
                 </AnalysisSection>
+                <AnalysisSection title="Response Actions">
+                    <div className="flex items-center gap-4 bg-gray-200 dark:bg-gray-800 p-3 rounded-md">
+                        <CommandLineIcon className="h-6 w-6 text-green-500 flex-shrink-0" />
+                        <code className="flex-grow font-mono text-sm text-black dark:text-white">{blockCommand}</code>
+                         <button 
+                            onClick={handleCopyCommand}
+                            className="flex items-center gap-2 text-xs bg-blue-600 hover:bg-blue-500 text-white font-semibold py-1 px-3 rounded-md transition-colors duration-200"
+                            >
+                            <ClipboardDocumentIcon className="h-4 w-4" />
+                            {copied ? 'Copied!' : 'Copy'}
+                         </button>
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Run this command on your UFW firewall to block all future traffic from the source IP.</p>
+                </AnalysisSection>
                  <AnalysisSection title="Threat Actor DNA">
                     <div className="space-y-2">
                         <p><strong className="text-black dark:text-white">Actor:</strong> {analysis.threatActorDNA.name}</p>
                         <p><strong className="text-black dark:text-white">Motivation:</strong> {analysis.threatActorDNA.motivation}</p>
                         <p><strong className="text-black dark:text-white">Common Tools:</strong> {analysis.threatActorDNA.commonTools}</p>
                         <div>
-                            <strong className="text-black dark:text-white">TTPs (MITRE ATT&amp;CK):</strong>
+                            <strong className="text-black dark:text-white">TTPs (MITRE ATT&CK):</strong>
                             {analysis.threatActorDNA.ttps && analysis.threatActorDNA.ttps.length > 0 ? (
                                 <ul className="mt-1 list-disc list-inside space-y-1">
                                     {analysis.threatActorDNA.ttps.map((ttp) => (

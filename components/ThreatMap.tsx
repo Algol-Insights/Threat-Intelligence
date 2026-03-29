@@ -14,23 +14,6 @@ const ThreatMap: React.FC<ThreatMapProps> = ({ threats }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any | null>(null);
   const markersRef = useRef<any[]>([]);
-  const themeRef = useRef(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-
-  useEffect(() => {
-    // Observer to detect theme changes
-    const observer = new MutationObserver(() => {
-        themeRef.current = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-        // Force re-render of popups if any are open by re-binding them
-        markersRef.current.forEach(marker => {
-            const popupContent = marker.getPopup().getContent();
-            marker.unbindPopup();
-            marker.bindPopup(popupContent);
-        });
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-
-    return () => observer.disconnect();
-  }, [])
 
   useEffect(() => {
     if (typeof window !== 'undefined' && mapContainerRef.current && !mapRef.current) {
@@ -45,7 +28,8 @@ const ThreatMap: React.FC<ThreatMapProps> = ({ threats }) => {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 19,
-        style: themeRef.current === 'dark' ? 'dark_all' : 'light_all'
+        // The style will be updated by the theme observer on the html element
+        style: document.documentElement.classList.contains('dark') ? 'dark_all' : 'light_all'
       }).addTo(mapRef.current);
 
       L.control.zoom({ position: 'bottomright' }).addTo(mapRef.current);
@@ -57,14 +41,25 @@ const ThreatMap: React.FC<ThreatMapProps> = ({ threats }) => {
   }, []);
 
   useEffect(() => {
+    // Observer to update tile layer on theme change
+    const observer = new MutationObserver(() => {
+        const isDark = document.documentElement.classList.contains('dark');
+        if (mapRef.current) {
+            mapRef.current.eachLayer((layer: any) => {
+                if (layer instanceof L.TileLayer) {
+                    layer.setUrl(`https://{s}.basemaps.cartocdn.com/${isDark ? 'dark_all' : 'light_all'}/{z}/{x}/{y}{r}.png`);
+                }
+            });
+        }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+    return () => observer.disconnect();
+  }, []);
+
+
+  useEffect(() => {
     if (mapRef.current) {
-        // Update tile layer on theme change
-        mapRef.current.eachLayer((layer: any) => {
-            if (layer instanceof L.TileLayer) {
-                layer.setUrl(`https://{s}.basemaps.cartocdn.com/${themeRef.current === 'dark' ? 'dark_all' : 'light_all'}/{z}/{x}/{y}{r}.png`);
-            }
-        });
-        
         // Clear existing markers
         markersRef.current.forEach(marker => marker.remove());
         markersRef.current = [];
@@ -85,7 +80,7 @@ const ThreatMap: React.FC<ThreatMapProps> = ({ threats }) => {
             markersRef.current.push(marker);
         });
     }
-  }, [threats, themeRef.current]);
+  }, [threats]);
 
   return (
     <div className="bg-white dark:bg-black p-4 rounded-lg border border-gray-200 dark:border-gray-800">

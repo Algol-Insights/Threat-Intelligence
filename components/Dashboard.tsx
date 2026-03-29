@@ -11,6 +11,8 @@ import TrainingScenario from './TrainingScenario';
 import NetworkDevices from './NetworkDevices';
 import { ShieldCheckIcon, SunIcon, MoonIcon, Cog6ToothIcon } from './icons';
 
+type LogActionFilter = 'all' | 'blocked' | 'allowed' | 'analyzed';
+
 interface DashboardProps {
   logs: FirewallLog[];
   allLogs: FirewallLog[]; // For TopThreats, which needs all logs regardless of filter
@@ -36,6 +38,8 @@ interface DashboardProps {
   networkDevices: NetworkDevice[];
   onSelectDevice: (device: NetworkDevice) => void;
   selectedDeviceId: string | undefined;
+  logActionFilter: LogActionFilter;
+  onLogActionFilterChange: (filter: LogActionFilter) => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({
@@ -63,6 +67,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   networkDevices,
   onSelectDevice,
   selectedDeviceId,
+  logActionFilter,
+  onLogActionFilterChange,
 }) => {
   return (
     <div className="flex flex-col gap-4 lg:gap-6 h-full">
@@ -106,7 +112,12 @@ const Dashboard: React.FC<DashboardProps> = ({
 
       <main className="flex-grow grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 min-h-0">
         <div className="lg:col-span-1 flex flex-col gap-4 lg:gap-6 overflow-y-auto pr-2">
-          <SummaryMetrics logs={allLogs} analyzedCount={Object.keys(analyzedLogs).length} />
+          <SummaryMetrics 
+            logs={allLogs} 
+            analyzedCount={Object.keys(analyzedLogs).length} 
+            activeFilter={logActionFilter}
+            onFilterChange={onLogActionFilterChange}
+          />
           <NetworkDevices devices={networkDevices} onSelectDevice={onSelectDevice} selectedDeviceId={selectedDeviceId} />
           <TopThreats analyzedLogs={analyzedLogs} logs={allLogs} onSelectLog={onSelectLog} />
           <TrainingScenario />

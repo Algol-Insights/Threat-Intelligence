@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { TRAINING_SCENARIO } from '../constants';
 import { AcademicCapIcon } from './icons';

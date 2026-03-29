@@ -1,3 +1,4 @@
+
 import { FirewallLog, GeolocatedThreat } from '../types';
 import { IP_GEOLOCATIONS } from '../constants';
 

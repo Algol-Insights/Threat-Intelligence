@@ -88,17 +88,27 @@ const threatAnalysisSchema = {
 };
 
 export const analyzeThreat = async (log: FirewallLog, context: OrganizationalContext | null): Promise<ThreatAnalysis> => {
-  const logString = JSON.stringify(log, null, 2);
+  const { mispContext, ...logDetails } = log;
+  const logString = JSON.stringify(logDetails, null, 2);
+  
   const contextString = context ? `
     Organizational Context:
     - Industry: ${context.industry}
     - Primary Country of Operation: ${context.country}
   ` : "No organizational context provided.";
 
+  const mispContextString = mispContext ? `
+    External Threat Intelligence (from MISP):
+    ${JSON.stringify(mispContext, null, 2)}
+    **Crucially, this external intelligence confirms the indicator is known. Correlate this with the log data.**
+  ` : "No external intelligence was found for this indicator.";
+
+
   const prompt = `
     As a senior cybersecurity analyst named Algol, provide an expert-level, multi-faceted threat analysis of the following firewall log.
     
     ${contextString}
+    ${mispContextString}
 
     Firewall Log:
     ${logString}
