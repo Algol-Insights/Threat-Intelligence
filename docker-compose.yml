@@ -1,24 +1,63 @@
 version: '3.8'
 
 services:
-  frontend:
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-
   backend:
     build:
       context: ./backend
     ports:
-      # This port is for the WebSocket server
       - "8080:8080"
-      # This port is for the Syslog server
       - "1514:1514/udp"
-    # Give the container capabilities to perform network scans
+    environment:
+      - PORT=8080
+      - SYSLOG_PORT=1514
+      - JWT_SECRET=${JWT_SECRET:-chengeto-production-secret-change-me}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-Chengeto@2026!}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - ORG_SECTOR=${ORG_SECTOR:-general}
+      - DB_PATH=/app/data/chengeto.db
+    volumes:
+      - chengeto-data:/app/data
     cap_add:
       - NET_ADMIN
       - NET_RAW
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8080/api/v1/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Demo runner — only for development/presentation
+  demo:
+    build:
+      context: ./demo
+      dockerfile: Dockerfile
+    environment:
+      - SYSLOG_HOST=backend
+      - SYSLOG_PORT=1514
+      - CONTROL_PORT=3002
+    ports:
+      - "3002:3002"
+    depends_on:
+      backend:
+        condition: service_healthy
+    profiles:
+      - demo
+    restart: unless-stopped
+
+volumes:
+  chengeto-data:
+    driver: local

@@ -1,0 +1,7 @@
+{
+  "name": "chengeto-demo",
+  "version": "1.0.0",
+  "main": "demo-runner.js",
+  "scripts": { "start": "node demo-runner.js" },
+  "dependencies": {}
+}
