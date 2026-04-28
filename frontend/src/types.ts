@@ -2,6 +2,9 @@
 // ORIGINAL TYPES — preserved exactly from your types.ts
 // ═══════════════════════════════════════════════════════════════════════════
 
+// Alias used by page components
+export type LogEntry = FirewallLog;
+
 export interface FirewallLog {
   id: string;
   timestamp: string;

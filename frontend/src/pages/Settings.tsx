@@ -42,13 +42,13 @@ function UsersTab() {
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({ username: '', password: '', role: 'viewer', displayName: '' });
 
-  const fetch = () => api.getUsers().then(r => setUsers(r.users)).catch(() => {});
-  useEffect(fetch, []);
+  const fetchUsers = () => { api.getUsers().then(r => setUsers(r.users)).catch(() => {}); };
+  useEffect(() => { fetchUsers(); }, []);
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     await api.createUser(form);
-    setShowAdd(false); setForm({ username: '', password: '', role: 'viewer', displayName: '' }); fetch();
+    setShowAdd(false); setForm({ username: '', password: '', role: 'viewer', displayName: '' }); fetchUsers();
   };
 
   return (
@@ -87,12 +87,12 @@ function FeedsTab() {
   const [feeds, setFeeds] = useState<any[]>([]);
   const [syncing, setSyncing] = useState<string | null>(null);
 
-  const fetch = () => api.getFeeds().then(r => setFeeds(r.feeds)).catch(() => {});
-  useEffect(fetch, []);
+  const fetchFeeds = () => { api.getFeeds().then(r => setFeeds(r.feeds)).catch(() => {}); };
+  useEffect(() => { fetchFeeds(); }, []);
 
   const handleSync = async (id: string) => {
     setSyncing(id);
-    try { await api.syncFeed(id); fetch(); } catch { /* */ }
+    try { await api.syncFeed(id); fetchFeeds(); } catch { /* */ }
     setSyncing(null);
   };
 
@@ -121,12 +121,12 @@ function FeedsTab() {
 
 function RulesTab() {
   const [rules, setRules] = useState<any[]>([]);
-  const fetch = () => api.getCorrelationRules().then(r => setRules(r.rules)).catch(() => {});
-  useEffect(fetch, []);
+  const fetchRules = () => { api.getCorrelationRules().then(r => setRules(r.rules)).catch(() => {}); };
+  useEffect(() => { fetchRules(); }, []);
 
   const toggle = async (id: string, enabled: boolean) => {
     await api.updateCorrelationRule(id, { enabled: enabled ? 1 : 0 });
-    fetch();
+    fetchRules();
   };
 
   return (
