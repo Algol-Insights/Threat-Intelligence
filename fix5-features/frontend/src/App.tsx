@@ -5,7 +5,7 @@ import { wsService } from './services/websocket';
 import {
   LayoutDashboard, FileText, Shield, Network, AlertTriangle,
   Scale, Settings, LogOut, Menu, X, Activity, ChevronRight, Bug,
-  Grid3X3, FileBarChart, Zap, GraduationCap, Briefcase, Package, Sun, Moon, Flame
+  Grid3X3, FileBarChart, Zap, GraduationCap, Briefcase
 } from 'lucide-react';
 
 import Login from './pages/Login';
@@ -21,8 +21,6 @@ import Reports from './pages/Reports';
 import Playbooks from './pages/Playbooks';
 import ExecutiveBriefing from './pages/ExecutiveBriefing';
 import Training from './pages/Training';
-import Assets from './pages/Assets';
-import AttackHeatmap from './pages/AttackHeatmap';
 
 // ── Sidebar navigation ──────────────────────────────────────────────────────
 
@@ -31,14 +29,12 @@ const NAV = [
   { to: '/events', icon: FileText, label: 'Events' },
   { to: '/compliance', icon: Scale, label: 'CDPA Compliance', accent: true },
   { to: '/incidents', icon: AlertTriangle, label: 'Incidents' },
-  { to: '/playbooks', icon: Zap, label: 'SOAR Playbooks' },
   { to: '/network', icon: Network, label: 'Network' },
-  { to: '/assets', icon: Package, label: 'Asset Inventory' },
   { to: '/threats', icon: Bug, label: 'Threat Intel' },
   { to: '/mitre', icon: Grid3X3, label: 'MITRE ATT&CK' },
-  { to: '/heatmap', icon: Flame, label: 'Attack Heatmap' },
   { to: '/briefing', icon: Briefcase, label: 'Executive Briefing' },
   { to: '/reports', icon: FileBarChart, label: 'Reports' },
+  { to: '/playbooks', icon: Zap, label: 'SOAR Playbooks' },
   { to: '/training', icon: GraduationCap, label: 'Training' },
   { to: '/settings', icon: Settings, label: 'Settings', role: 'admin' },
 ];
@@ -111,18 +107,11 @@ function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => 
 
 function TopBar({ collapsed }: { collapsed: boolean }) {
   const [wsConnected, setWsConnected] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => setWsConnected(wsService.connected), 2000);
     return () => clearInterval(interval);
   }, []);
-
-  const toggleTheme = () => {
-    setDarkMode(!darkMode);
-    document.documentElement.classList.toggle('dark');
-    document.documentElement.classList.toggle('light');
-  };
 
   return (
     <header className={`fixed top-0 right-0 z-20 h-12 border-b border-soc-border bg-soc-bg/80 backdrop-blur-sm flex items-center px-6 gap-6 transition-all ${collapsed ? 'left-16' : 'left-60'}`}>
@@ -134,13 +123,8 @@ function TopBar({ collapsed }: { collapsed: boolean }) {
         <Activity className="w-3.5 h-3.5" />
         <span>Real-time monitoring active</span>
       </div>
-      <div className="ml-auto flex items-center gap-4">
-        <button onClick={toggleTheme} className="text-soc-muted hover:text-soc-text transition-colors" title="Toggle theme">
-          {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-        </button>
-        <span className="text-xs text-soc-muted font-mono">
-          {new Date().toLocaleDateString('en-ZW', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
-        </span>
+      <div className="ml-auto text-xs text-soc-muted font-mono">
+        {new Date().toLocaleDateString('en-ZW', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
       </div>
     </header>
   );
@@ -184,10 +168,8 @@ export default function App() {
             <Route path="/compliance" element={<Compliance />} />
             <Route path="/incidents" element={<Incidents />} />
             <Route path="/network" element={<NetworkPage />} />
-            <Route path="/assets" element={<Assets />} />
             <Route path="/threats" element={<Threats />} />
             <Route path="/mitre" element={<MitreMatrix />} />
-            <Route path="/heatmap" element={<AttackHeatmap />} />
             <Route path="/briefing" element={<ExecutiveBriefing />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/playbooks" element={<Playbooks />} />

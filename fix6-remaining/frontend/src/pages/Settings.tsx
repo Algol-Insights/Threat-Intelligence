@@ -72,7 +72,7 @@ function UsersTab() {
               <div><p className="text-sm font-medium">{u.display_name || u.username}</p><p className="text-xs text-soc-muted">@{u.username}</p></div>
             </div>
             <div className="flex items-center gap-2">
-              {u.mfa_enabled ? <Lock className="w-3 h-3 text-green-400"  /> : null}
+              {u.mfa_enabled ? <Lock className="w-3 h-3 text-green-400" title="MFA enabled" /> : null}
               <span className="badge bg-white/5 text-soc-muted text-[10px] capitalize">{u.role}</span>
             </div>
           </div>

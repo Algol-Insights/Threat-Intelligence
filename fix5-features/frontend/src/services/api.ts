@@ -64,14 +64,7 @@ export const api = {
   setConfig: (key: string, value: string) => request<{ success: boolean }>('/admin/config', { method: 'PUT', body: JSON.stringify({ key, value }) }),
   getCorrelationRules: () => get<{ rules: any[] }>('/admin/correlation/rules'),
   updateCorrelationRule: (id: string, data: any) => patch<{ success: boolean }>(`/admin/correlation/rules/${id}`, data),
-  createCorrelationRule: (data: any) => post<{ id: string }>('/admin/correlation/rules', data),
-  deleteCorrelationRule: (id: string) => del<{ success: boolean }>(`/admin/correlation/rules/${id}`),
-
-  // MFA
-  getMfaStatus: () => get<{ mfaEnabled: boolean }>('/auth/mfa/status'),
-  setupMfa: () => post<{ secret: string; otpauthUrl: string }>('/auth/mfa/setup', {}),
-  confirmMfa: (token: string) => post<{ success: boolean }>('/auth/mfa/confirm', { token }),
-  disableMfa: (token: string) => post<{ success: boolean }>('/auth/mfa/disable', { token }),
+  getPlaybooks: () => get<{ playbooks: any[] }>('/admin/playbooks'),
 
   // Metrics
   getMetrics: () => get<any>('/metrics'),
@@ -89,12 +82,6 @@ export const api = {
   getAlertConfig: () => get<any>('/alerts/config'),
   setAlertConfig: (key: string, value: string) => request<{ success: boolean }>('/alerts/config', { method: 'PUT', body: JSON.stringify({ key, value }) }),
   testAlert: () => post<any>('/alerts/test', {}),
-
-  // Assets
-  getAssets: () => get<{ assets: any[] }>('/assets'),
-  createAsset: (data: any) => post<{ id: string }>('/assets', data),
-  updateAsset: (id: string, data: any) => patch<{ success: boolean }>(`/assets/${id}`, data),
-  deleteAsset: (id: string) => del<{ success: boolean }>(`/assets/${id}`),
 
   // Health
   health: () => get<any>('/health'),

@@ -5,7 +5,7 @@ import { wsService } from './services/websocket';
 import {
   LayoutDashboard, FileText, Shield, Network, AlertTriangle,
   Scale, Settings, LogOut, Menu, X, Activity, ChevronRight, Bug,
-  Grid3X3, FileBarChart, Zap, GraduationCap, Briefcase, Package, Sun, Moon, Flame
+  Grid3X3, FileBarChart, Zap, GraduationCap, Briefcase, Package, Sun, Moon
 } from 'lucide-react';
 
 import Login from './pages/Login';
@@ -22,7 +22,6 @@ import Playbooks from './pages/Playbooks';
 import ExecutiveBriefing from './pages/ExecutiveBriefing';
 import Training from './pages/Training';
 import Assets from './pages/Assets';
-import AttackHeatmap from './pages/AttackHeatmap';
 
 // ── Sidebar navigation ──────────────────────────────────────────────────────
 
@@ -36,7 +35,6 @@ const NAV = [
   { to: '/assets', icon: Package, label: 'Asset Inventory' },
   { to: '/threats', icon: Bug, label: 'Threat Intel' },
   { to: '/mitre', icon: Grid3X3, label: 'MITRE ATT&CK' },
-  { to: '/heatmap', icon: Flame, label: 'Attack Heatmap' },
   { to: '/briefing', icon: Briefcase, label: 'Executive Briefing' },
   { to: '/reports', icon: FileBarChart, label: 'Reports' },
   { to: '/training', icon: GraduationCap, label: 'Training' },
@@ -187,7 +185,6 @@ export default function App() {
             <Route path="/assets" element={<Assets />} />
             <Route path="/threats" element={<Threats />} />
             <Route path="/mitre" element={<MitreMatrix />} />
-            <Route path="/heatmap" element={<AttackHeatmap />} />
             <Route path="/briefing" element={<ExecutiveBriefing />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/playbooks" element={<Playbooks />} />

@@ -42,8 +42,6 @@ const adminRoutes = require('./routes/adminRoutes');
 const eventsRoutes = require('./routes/eventsRoutes');
 const playbookRoutes = require('./routes/playbookRoutes');
 const alertRoutes = require('./routes/alertRoutes');
-const assetRoutes = require('./routes/assetRoutes');
-const mfaRoutes = require('./routes/mfaRoutes');
 const { sendAlert } = require('./alertService');
 
 // ── Configuration ───────────────────────────────────────────────────────────
@@ -83,7 +81,6 @@ app.get('/api/v1/health', (req, res) => {
 // ── Mount API routes (NEW) ──────────────────────────────────────────────────
 
 app.use('/api/v1/auth', authLimiter, authRoutes);
-app.use('/api/v1/auth/mfa', authenticate, mfaRoutes);
 app.use('/api/v1/analyze', authenticate, analyzeLimiter, analyzeRoutes);
 app.use('/api/v1/events', authenticate, apiLimiter, eventsRoutes);
 app.use('/api/v1/incidents', authenticate, apiLimiter, incidentRoutes);
@@ -93,7 +90,6 @@ app.use('/api/v1/feeds', authenticate, apiLimiter, feedRoutes);
 app.use('/api/v1/admin', authenticate, requireRole('admin'), apiLimiter, adminRoutes);
 app.use('/api/v1/playbooks', authenticate, apiLimiter, playbookRoutes);
 app.use('/api/v1/alerts', authenticate, apiLimiter, alertRoutes);
-app.use('/api/v1/assets', authenticate, apiLimiter, assetRoutes);
 
 // ── Correlation stats endpoint ──────────────────────────────────────────────
 
